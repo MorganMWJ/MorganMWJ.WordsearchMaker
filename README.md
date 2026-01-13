@@ -1,6 +1,6 @@
 # MorganMWJ.WordsearchMaker
-App for making wordsearch puzzles. React UI, Web API, and Nuget Package.
-Deployed to GitHub pages: [https://morganmwj.github.io/MorganMWJ.WordsearchMaker]("https://morganmwj.github.io/MorganMWJ.WordsearchMaker)
+App for making wordsearch puzzles. React UI, Web API, and Nuget Package. <br />
+Deployed to GitHub pages: [https://morganmwj.github.io/MorganMWJ.WordsearchMaker](https://morganmwj.github.io/MorganMWJ.WordsearchMaker)
 
 ## Publish the nuget package
 ```

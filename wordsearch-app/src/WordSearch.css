@@ -1,0 +1,43 @@
+.wordsearch-container {
+  display: flex;
+  gap: 2rem;
+  user-select: none;
+}
+
+.grid {
+  display: inline-block;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cell.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.word-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.word-list li {
+  font-size: 1.1rem;
+}
+
+.word-list li.found {
+  text-decoration: line-through;
+  color: gray;
+}

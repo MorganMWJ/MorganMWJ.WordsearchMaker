@@ -1,0 +1,16 @@
+﻿namespace MorganMWJ.WordsearchMaker;
+public enum Language
+{
+    English,
+    Spanish,
+    French,
+    German,
+    Italian,
+    Portuguese,
+    Dutch,
+    Swedish,
+    Norwegian,
+    Danish,
+    Finnish,
+    Polish
+}

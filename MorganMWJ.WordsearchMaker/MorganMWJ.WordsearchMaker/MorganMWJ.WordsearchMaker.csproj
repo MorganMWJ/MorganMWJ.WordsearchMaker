@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+<PropertyGroup>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageId>MorganMWJ.WordsearchMaker</PackageId>
+	<Title>Worksearch Maker</Title>
+	<Version>1.5.0</Version>
+	<Authors>MorganMWJ</Authors>
+	<Description>Generates Wordsearch given list of words.</Description>
+	<PackageTags>wordsearch;fun;practice</PackageTags>
+	<DebugType>embedded</DebugType>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageReleaseNotes>
+		- Added GetCell(row, column) read-only accessor
+		- Improved README documentation
+		- Marked printing methods as obsolete
+		- Wordsearch can now be upper or lower case
+		- Direction of word insertions can now be restricted (only horizontal, only vertical, etc.)
+		- Random seed allows for reproducible wordsearches
+		- Add support for multiple lanaguages
+	</PackageReleaseNotes>
+</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageLicenseFile>License.txt</PackageLicenseFile>
+		<!-- Path to your license file -->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="\"/>
+		<None Include="..\License.txt" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>MorganMWJ.WordsearchMaker.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+</Project>

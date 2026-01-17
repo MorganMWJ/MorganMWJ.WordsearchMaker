@@ -12,6 +12,7 @@ type Props = {
 };
 
 export default function WordSearch({ grid, words }: Props) {
+  debugger;
   const [isDragging, setIsDragging] = useState(false);
   const [selection, setSelection] = useState<Cell[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);

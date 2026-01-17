@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import WordSearch from "./WordSearch";
 import WordsearchForm from "./WordsearchForm";
 

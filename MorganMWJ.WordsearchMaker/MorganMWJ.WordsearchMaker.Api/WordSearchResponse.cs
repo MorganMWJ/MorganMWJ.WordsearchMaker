@@ -1,6 +1,6 @@
 ﻿namespace MorganMWJ.WordsearchMaker.Api;
 
-internal class WordSearchResponse
+public class WordSearchResponse
 {
     public required int GridSize { get; set; }
     public required char[][] Grid { get; set; }

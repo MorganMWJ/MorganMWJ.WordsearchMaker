@@ -3,16 +3,19 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MorganMWJ.WordsearchMaker.Api;
 
 public class GenerateWordSearchFunction
 {
     private readonly ILogger _logger;
+    private readonly IWordsearchFactory _wordsearchFactory;
 
-    public GenerateWordSearchFunction(ILoggerFactory loggerFactory)
+    public GenerateWordSearchFunction(ILoggerFactory loggerFactory, IWordsearchFactory wordsearchFactory)
     {
         _logger = loggerFactory.CreateLogger<GenerateWordSearchFunction>();
+        _wordsearchFactory = wordsearchFactory;
     }
 
     [Function("GenerateWordSearch")]
@@ -26,7 +29,11 @@ public class GenerateWordSearchFunction
         {
             request = await JsonSerializer.DeserializeAsync<WordSearchRequest>(
                 req.Body,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false) }
+                }
             );
         }
         catch
@@ -44,27 +51,12 @@ public class GenerateWordSearchFunction
 
         try
         {
-            var ws = new Wordsearch(
-                    request.WordList,
-                    (uint)request.GridSize,
-                    request.GenerationSeed);
+            var ws = _wordsearchFactory.Create(request);
 
             ws.Regenerate();
-            var wsGrid = ws.GetGrid();
-            var wsGridJagged = ToJagged(wsGrid);
-            var wsString = ws.ToStringWordsearch();
-            var wsSolutionString = ws.ToStringSolution();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new WordSearchResponse
-            {
-                GridSize = request.GridSize,
-                Grid = wsGridJagged,
-                Words = ws.Words,
-                Seed = ws.Seed,
-                WordsearchString = wsString,
-                SolutionString = wsSolutionString
-            });
+            await response.WriteAsJsonAsync(ws.ToResponse());
 
             return response;
         }
@@ -85,25 +77,5 @@ public class GenerateWordSearchFunction
         return response;
     }
 
-    /// <summary>
-    /// Move this into nuget pkg later
-    /// </summary>
-    public char[][] ToJagged(char[,] source)
-    {
-        int rows = source.GetLength(0);
-        int cols = source.GetLength(1);
 
-        var result = new char[rows][];
-
-        for (int i = 0; i < rows; i++)
-        {
-            result[i] = new char[cols];
-            for (int j = 0; j < cols; j++)
-            {
-                result[i][j] = source[i, j];
-            }
-        }
-
-        return result;
-    }
 }

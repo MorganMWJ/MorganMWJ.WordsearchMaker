@@ -7,6 +7,7 @@ interface WordsearchFormProps {
 const WordsearchForm: React.FC<WordsearchFormProps> = ({ onGenerate }) => {
   const [words, setWords] = useState('');
   const [gridSize, setGridSize] = useState(20);
+  const [letterCase, setLetterCase] = useState('lower');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -25,7 +26,7 @@ const WordsearchForm: React.FC<WordsearchFormProps> = ({ onGenerate }) => {
     }
     try {
       const { generateWordsearch } = await import('./api');
-      const data = await generateWordsearch({ gridSize, wordList });
+      const data = await generateWordsearch({ gridSize, wordList, letterCase });
       onGenerate(data);
     } catch (err: any) {
       setError(err.message || 'Unknown error');
@@ -60,6 +61,17 @@ const WordsearchForm: React.FC<WordsearchFormProps> = ({ onGenerate }) => {
             onChange={e => setGridSize(Number(e.target.value))}
             style={{ marginLeft: '1rem' }}
           />
+        </label>
+      </div>
+        <div style={{ marginBottom: '1rem' }}>
+        <label>
+          Wordsearch Case:
+          <select name="selectedCase"
+           onChange={e => setLetterCase(e.target.value)}
+           style={{ marginLeft: '1rem' }}>
+            <option value="lower">Lower</option>
+            <option value="upper">Upper</option>
+          </select>
         </label>
       </div>
       <button type="submit" disabled={loading}>

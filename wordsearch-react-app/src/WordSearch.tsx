@@ -1,10 +1,7 @@
 import { useState } from "react";
 import "./WordSearch.css";
 
-type Cell = {
-  row: number;
-  col: number;
-};
+type Cell = { row: number; col: number };
 
 type Props = {
   grid: string[][];
@@ -12,30 +9,76 @@ type Props = {
 };
 
 export default function WordSearch({ grid, words }: Props) {
-  //debugger;
   const [isDragging, setIsDragging] = useState(false);
   const [selection, setSelection] = useState<Cell[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
+  const [direction, setDirection] = useState<{ dx: number; dy: number } | null>(null);
 
+  // --- Helper to compute direction ---
+  function computeDirection(start: Cell, end: Cell) {
+    const dx = end.col - start.col;
+    const dy = end.row - start.row;
+
+    const stepX = dx === 0 ? 0 : dx / Math.abs(dx);
+    const stepY = dy === 0 ? 0 : dy / Math.abs(dy);
+
+    // Allow only straight or perfect diagonal lines
+    if (stepX !== 0 && stepY !== 0 && Math.abs(dx) !== Math.abs(dy)) return null;
+
+    return { dx: stepX, dy: stepY };
+  }
+
+  // --- Generate cells along the direction ---
+  function generateCells(start: Cell, end: Cell, dir: { dx: number; dy: number }) {
+    const cells: Cell[] = [];
+    let row = start.row;
+    let col = start.col;
+
+    while (true) {
+      cells.push({ row, col });
+      if (row === end.row && col === end.col) break;
+      row += dir.dy;
+      col += dir.dx;
+    }
+
+    return cells;
+  }
+
+  // --- Event handlers ---
   function handleMouseDown(cell: Cell) {
     setIsDragging(true);
     setSelection([cell]);
+    setDirection(null);
   }
 
   function handleMouseEnter(cell: Cell) {
     if (!isDragging) return;
-    const last = selection[selection.length - 1];
-    if (last.row === cell.row && last.col === cell.col) return;
-    setSelection([...selection, cell]);
+    const start = selection[0];
+
+    // if direction from start straight line or diagonal
+    // And must be the same direction as before (if set)
+    // then add current cell to selection
+    const dir = computeDirection(start, cell);
+    var isStraight = dir !== null;
+    if (isStraight && (direction === null || (dir!.dx === direction.dx && dir!.dy === direction.dy))) {
+      var newSelection = generateCells(start, cell, dir!);
+      setSelection(newSelection);
+      setDirection(dir);
+      return;
+    }
+    setDirection(dir);
+    // I am not sure how this works so well yey- investigate later
   }
 
   function handleMouseUp() {
     setIsDragging(false);
+    if (!selection.length) return;
+
     const selectedWord = selection.map(c => grid[c.row][c.col]).join("");
     const reversed = selectedWord.split("").reverse().join("");
 
     const match = words.find(
-      w => w.toUpperCase() === selectedWord || w.toUpperCase() === reversed
+      w => w === selectedWord || w === reversed
     );
 
     if (match && !foundWords.includes(match)) {
@@ -43,6 +86,7 @@ export default function WordSearch({ grid, words }: Props) {
     }
 
     setSelection([]);
+    setDirection(null);
   }
 
   function isSelected(row: number, col: number) {

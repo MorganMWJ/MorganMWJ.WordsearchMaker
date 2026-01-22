@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Box, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
 import "./WordSearch.css";
 
 type Cell = { row: number; col: number };
@@ -94,35 +95,54 @@ export default function WordSearch({ grid, words }: Props) {
   }
 
   return (
-    <div className="wordsearch-container">
-      <div className="grid" onMouseLeave={() => setIsDragging(false)}>
+    <Box className="wordsearch-container" sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', mt: 3 }}>
+      <Box className="grid" onMouseLeave={() => setIsDragging(false)}>
         {grid.map((row, r) => (
-          <div key={r} className="row">
+          <Box key={r} className="row" sx={{ display: 'flex' }}>
             {row.map((letter, c) => (
-              <div
+              <Box
                 key={c}
                 className={`cell ${isSelected(r, c) ? "selected" : ""}`}
                 onMouseDown={() => handleMouseDown({ row: r, col: c })}
                 onMouseEnter={() => handleMouseEnter({ row: r, col: c })}
                 onMouseUp={handleMouseUp}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem'
+                }}
               >
                 {letter}
-              </div>
+              </Box>
             ))}
-          </div>
+          </Box>
         ))}
-      </div>
+      </Box>
 
-      <div className="word-list">
-        <h3>Words</h3>
-        <ul>
+      <Paper elevation={2} sx={{ p: 3, minWidth: 200 }}>
+        <Typography variant="h5" component="h3" gutterBottom>
+          Words
+        </Typography>
+        <List>
           {words.map(word => (
-            <li key={word} className={foundWords.includes(word) ? "found" : ""}>
-              {word}
-            </li>
+            <ListItem
+              key={word}
+              sx={{
+                textDecoration: foundWords.includes(word) ? 'line-through' : 'none',
+                color: foundWords.includes(word) ? 'success.main' : 'text.primary'
+              }}
+            >
+              <ListItemText primary={word} />
+            </ListItem>
           ))}
-        </ul>
-      </div>
-    </div>
+        </List>
+      </Paper>
+    </Box>
   );
 }

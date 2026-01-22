@@ -1,4 +1,16 @@
 import React, { useState } from 'react';
+import {
+  Box,
+  TextField,
+  Slider,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  Alert,
+  Typography
+} from '@mui/material';
 
 interface WordsearchFormProps {
   onGenerate: (data: any) => void;
@@ -36,49 +48,68 @@ const WordsearchForm: React.FC<WordsearchFormProps> = ({ onGenerate }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
-      <div style={{ marginBottom: '1rem' }}>
-        <label>
-          Words (comma or newline separated):<br />
-          <textarea
-            value={words}
-            onChange={e => setWords(e.target.value)}
-            rows={6}
-            cols={40}
-            style={{ marginTop: '0.5rem' }}
-            placeholder="cat, dog, pig, ..."
-          />
-        </label>
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <label>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          label="Words (comma or newline separated)"
+          value={words}
+          onChange={e => setWords(e.target.value)}
+          multiline
+          rows={6}
+          fullWidth
+          placeholder="cat, dog, pig, ..."
+          variant="outlined"
+        />
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography gutterBottom>
           Wordsearch Size: {gridSize}
-          <input
-            type="range"
-            min={8}
-            max={50}
-            value={gridSize}
-            onChange={e => setGridSize(Number(e.target.value))}
-            style={{ marginLeft: '1rem' }}
-          />
-        </label>
-      </div>
-        <div style={{ marginBottom: '1rem' }}>
-        <label>
-          Wordsearch Case:
-          <select name="selectedCase"
-           onChange={e => setLetterCase(e.target.value)}
-           style={{ marginLeft: '1rem' }}>
-            <option value="lower">Lower</option>
-            <option value="upper">Upper</option>
-          </select>
-        </label>
-      </div>
-      <button type="submit" disabled={loading}>
+        </Typography>
+        <Slider
+          value={gridSize}
+          onChange={(_, value) => setGridSize(value as number)}
+          min={8}
+          max={50}
+          valueLabelDisplay="auto"
+          marks={[
+            { value: 8, label: '8' },
+            { value: 50, label: '50' }
+          ]}
+        />
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="case-select-label">Wordsearch Case</InputLabel>
+          <Select
+            labelId="case-select-label"
+            value={letterCase}
+            label="Wordsearch Case"
+            onChange={e => setLetterCase(e.target.value)}
+          >
+            <MenuItem value="lower">Lower</MenuItem>
+            <MenuItem value="upper">Upper</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      <Button
+        type="submit"
+        variant="contained"
+        size="large"
+        disabled={loading}
+        fullWidth
+      >
         {loading ? 'Generating...' : 'Generate Wordsearch'}
-      </button>
-      {error && <div style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
-    </form>
+      </Button>
+
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+    </Box>
   );
 };
 

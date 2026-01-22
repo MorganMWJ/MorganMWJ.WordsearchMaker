@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Container, Typography, Box } from "@mui/material";
 import WordSearch from "./WordSearch";
 import WordsearchForm from "./WordsearchForm";
 
@@ -11,16 +12,22 @@ function App() {
   const [wordsearchData, setWordsearchData] = useState<WordSearchData  | null>(null);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Word Search Maker</h1>
-      <WordsearchForm onGenerate={setWordsearchData} />
+    <Container maxWidth="lg" sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography variant="h3" component="h1" gutterBottom textAlign="center">
+        Word Search Maker
+      </Typography>
+      <Box sx={{ width: '100%', maxWidth: 600 }}>
+        <WordsearchForm onGenerate={setWordsearchData} />
+      </Box>
       
       {wordsearchData ? (
         <WordSearch grid={wordsearchData.Grid} words={wordsearchData.Words} />
       ) : (
-        <div style={{ color: "#888" }}>Fill out the form and generate a wordsearch!</div>
+        <Box sx={{ color: "text.secondary", mt: 2, textAlign: 'center' }}>
+          Fill out the form and generate a wordsearch!
+        </Box>
       )}
-    </div>
+    </Container>
   );
 }
 

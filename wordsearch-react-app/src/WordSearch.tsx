@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
+import { Box, Typography, Paper, List, ListItem, ListItemText, Alert } from "@mui/material";
 import "./WordSearch.css";
 
 type Cell = { row: number; col: number };
@@ -96,6 +96,13 @@ export default function WordSearch({ grid, words }: Props) {
 
   return (
     <Box className="wordsearch-container" sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', mt: 3 }}>
+
+      <Alert severity={foundWords.length === words.length ? "success" : "info"} sx={{ width: '100%' }}>
+        {foundWords.length === words.length
+          ? "Congratulations! You found all the words!"
+          : `Words found: ${foundWords.length} / ${words.length}`}
+      </Alert>
+
       <Box className="grid" onMouseLeave={() => setIsDragging(false)}>
         {grid.map((row, r) => (
           <Box key={r} className="row" sx={{ display: 'flex' }}>

@@ -38,7 +38,7 @@ public class GenerateWordSearchFunction
         }
         catch
         {
-            return CreateError(req, HttpStatusCode.BadRequest, "Invalid JSON body.");
+            return await CreateError(req, HttpStatusCode.BadRequest, "Invalid JSON body.");
         }
 
         if (request is null ||
@@ -46,7 +46,7 @@ public class GenerateWordSearchFunction
             request.WordList is null ||
             request.WordList.Count == 0)
         {
-            return CreateError(req, HttpStatusCode.BadRequest, "Invalid request data.");
+            return await CreateError(req, HttpStatusCode.BadRequest, "Invalid request data.");
         }
 
         try
@@ -62,18 +62,19 @@ public class GenerateWordSearchFunction
         }
         catch (Exception e)
         {
-            return CreateError(req, HttpStatusCode.BadRequest, e.Message);
+            return await CreateError(req, HttpStatusCode.BadRequest, e.Message);
         }
 
     }
 
-    private static HttpResponseData CreateError(
+    private async Task<HttpResponseData> CreateError(
         HttpRequestData req,
         HttpStatusCode status,
         string message)
     {
-        var response = req.CreateResponse(status);
-        response.WriteAsJsonAsync(new { error = message });
+        var response = req.CreateResponse();
+        await response.WriteAsJsonAsync(new { error = message });
+        response.StatusCode = status;
         return response;
     }
 

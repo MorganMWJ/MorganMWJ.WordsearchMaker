@@ -16,7 +16,14 @@ export async function generateWordsearch({ gridSize, wordList, letterCase }: { g
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    throw new Error('API error: ' + response.status);
+    const errorText = await response.text();
+    try {
+      const errorJson = JSON.parse(errorText);
+      throw new Error(errorJson.error || `API error: ${response.status}`);
+    } catch (parseError) {
+      // If JSON parsing fails, throw the raw error text
+      throw new Error(`API error: ${response.status}\n${errorText}`);
+    }
   }
   return await response.json();
 }

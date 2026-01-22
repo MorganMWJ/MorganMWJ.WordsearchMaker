@@ -1,0 +1,2 @@
+const c="https://wordsearch-generator-api-f9excqg7bhehbjam.uksouth-01.azurewebsites.net/api/generatewordsearch";async function i({gridSize:o,wordList:a,letterCase:n}){const s=Math.floor(Math.random()*1e6),r=await fetch(c,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({gridSize:o,wordList:a,letterCase:n,generationSeed:s})});if(!r.ok){const e=await r.text();try{const t=JSON.parse(e);throw new Error(t.error||`API error: ${r.status}`)}catch{throw new Error(`API error: ${r.status}
+${e}`)}}return await r.json()}export{i as generateWordsearch};

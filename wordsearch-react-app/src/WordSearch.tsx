@@ -4,6 +4,11 @@ import "./WordSearch.css";
 
 type Cell = { row: number; col: number };
 
+type FoundWord = {
+  word: string;
+  cells: Cell[];
+};
+
 type Props = {
   grid: string[][];
   words: string[];
@@ -12,7 +17,7 @@ type Props = {
 export default function WordSearch({ grid, words }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [selection, setSelection] = useState<Cell[]>([]);
-  const [foundWords, setFoundWords] = useState<string[]>([]);
+  const [foundWords, setFoundWords] = useState<FoundWord[]>([]);
   const [direction, setDirection] = useState<{ dx: number; dy: number } | null>(null);
 
   // --- Helper to compute direction ---
@@ -82,8 +87,8 @@ export default function WordSearch({ grid, words }: Props) {
       w => w === selectedWord || w === reversed
     );
 
-    if (match && !foundWords.includes(match)) {
-      setFoundWords([...foundWords, match]);
+    if (match && !foundWords.some(fw => fw.word === match)) {
+      setFoundWords([...foundWords, { word: match, cells: [...selection] }]);
     }
 
     setSelection([]);
@@ -92,6 +97,10 @@ export default function WordSearch({ grid, words }: Props) {
 
   function isSelected(row: number, col: number) {
     return selection.some(c => c.row === row && c.col === col);
+  }
+
+  function isFoundCell(row: number, col: number) {
+    return foundWords.some(fw => fw.cells.some(c => c.row === row && c.col === col));
   }
 
   return (
@@ -109,7 +118,7 @@ export default function WordSearch({ grid, words }: Props) {
             {row.map((letter, c) => (
               <Box
                 key={c}
-                className={`cell ${isSelected(r, c) ? "selected" : ""}`}
+                className={`cell ${isSelected(r, c) ? "selected" : ""} ${isFoundCell(r, c) ? "found" : ""}`}
                 onMouseDown={() => handleMouseDown({ row: r, col: c })}
                 onMouseEnter={() => handleMouseEnter({ row: r, col: c })}
                 onMouseUp={handleMouseUp}
@@ -122,7 +131,8 @@ export default function WordSearch({ grid, words }: Props) {
                   cursor: 'pointer',
                   userSelect: 'none',
                   fontWeight: 'bold',
-                  fontSize: '1.1rem'
+                  fontSize: '1.1rem',
+                  backgroundColor: isFoundCell(r, c) ? 'rgba(33, 150, 243, 0.3)' : 'transparent'
                 }}
               >
                 {letter}
@@ -137,17 +147,20 @@ export default function WordSearch({ grid, words }: Props) {
           Words
         </Typography>
         <List>
-          {words.map(word => (
-            <ListItem
-              key={word}
-              sx={{
-                textDecoration: foundWords.includes(word) ? 'line-through' : 'none',
-                color: foundWords.includes(word) ? 'success.main' : 'text.primary'
-              }}
-            >
-              <ListItemText primary={word} />
-            </ListItem>
-          ))}
+          {words.map(word => {
+            const foundWord = foundWords.find(fw => fw.word === word);
+            return (
+              <ListItem
+                key={word}
+                sx={{
+                  textDecoration: foundWord ? 'line-through' : 'none',
+                  color: foundWord ? 'success.main' : 'text.primary'
+                }}
+              >
+                <ListItemText primary={word} />
+              </ListItem>
+            );
+          })}
         </List>
       </Paper>
     </Box>

@@ -3,9 +3,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Release version (e.g. 1.3.0)"
-        required: true
       publishNuget:
         type: boolean
         default: true
@@ -37,7 +34,6 @@ jobs:
       - name: Pack
         run: |
           dotnet pack -c Release \
-          -p:PackageVersion=${{ inputs.version }} \
           -o artifacts
 
       - name: Push
@@ -45,6 +41,7 @@ jobs:
           dotnet nuget push artifacts/*.nupkg \
           --api-key ${{ secrets.NUGET_API_KEY }} \
           --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
   api:
     if: ${{ inputs.publishApi }}
     runs-on: ubuntu-latest

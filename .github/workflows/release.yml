@@ -47,8 +47,6 @@ jobs:
     name: Publish API (Azure Function)
     if: ${{ inputs.publishApi }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -77,6 +75,10 @@ jobs:
     name: Publish React App
     if: ${{ inputs.publishReact }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4

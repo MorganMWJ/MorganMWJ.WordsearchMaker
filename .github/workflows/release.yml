@@ -84,16 +84,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: wordsearch-react-app/package-lock.json
 
-      - name: Configure git identity
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Install
+      - name: Install dependencies
         working-directory: wordsearch-react-app
         run: npm ci
 
-      - name: Deploy
+      - name: Build
         working-directory: wordsearch-react-app
-        run: npm run deploy
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: wordsearch-react-app/dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

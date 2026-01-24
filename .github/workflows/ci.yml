@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --------------------
+      # .NET build & tests
+      # --------------------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        working-directory: /MorganMWJ.WordsearchMaker
+        run: dotnet restore
+
+      - name: Build
+        working-directory: /MorganMWJ.WordsearchMaker
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        working-directory: /MorganMWJ.WordsearchMaker
+        run: dotnet test -c Release --no-build
+
+      # --------------------
+      # React build
+      # --------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install React dependencies
+        working-directory: wordsearch-react-app
+        run: npm ci
+
+      - name: Build React app
+        working-directory: wordsearch-react-app
+        run: npm run build

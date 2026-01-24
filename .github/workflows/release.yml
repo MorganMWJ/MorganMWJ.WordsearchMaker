@@ -59,11 +59,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Publish Function App
+        run: |
+          dotnet publish MorganMWJ.WordsearchMaker/MorganMWJ.WordsearchMaker.Api \
+          -c Release \
+          -o ./publish
+
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
         with:
           app-name: wordsearch-generator-api
-          package: 'MorganMWJ.WordsearchMaker/MorganMWJ.WordsearchMaker.Api'
+          package: './publish'
 
   react:
     name: Publish React App

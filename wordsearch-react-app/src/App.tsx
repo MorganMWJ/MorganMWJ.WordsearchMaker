@@ -12,7 +12,7 @@ function App() {
   const [wordsearchData, setWordsearchData] = useState<WordSearchData  | null>(null);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Container maxWidth="lg" sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 auto' }}>
       <Typography variant="h3" component="h1" gutterBottom textAlign="center">
         Word Search Maker
       </Typography>

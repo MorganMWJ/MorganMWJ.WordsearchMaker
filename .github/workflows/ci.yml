@@ -9,11 +9,15 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: MorganMWJ.WordsearchMaker
+
     steps:
       - uses: actions/checkout@v4
 
       # --------------------
-      # .NET build & tests
+      # .NET
       # --------------------
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -21,24 +25,23 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Restore
-        working-directory: /MorganMWJ.WordsearchMaker
         run: dotnet restore
 
       - name: Build
-        working-directory: /MorganMWJ.WordsearchMaker
         run: dotnet build -c Release --no-restore
 
       - name: Test
-        working-directory: /MorganMWJ.WordsearchMaker
         run: dotnet test -c Release --no-build
 
       # --------------------
-      # React build
+      # React
       # --------------------
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: "npm"
+          cache-dependency-path: wordsearch-react-app/package-lock.json
 
       - name: Install React dependencies
         working-directory: wordsearch-react-app

@@ -47,9 +47,6 @@ jobs:
     name: Publish API (Azure Function)
     if: ${{ inputs.publishApi }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: MorganMWJ.WordsearchMaker
 
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +63,7 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: wordsearch-generator-api
-          package: './MorganMWJ.WordsearchMaker.Api'
+          package: 'MorganMWJ.WordsearchMaker/MorganMWJ.WordsearchMaker.Api'
 
   react:
     name: Publish React App

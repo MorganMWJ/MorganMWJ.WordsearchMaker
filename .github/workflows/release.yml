@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: MorganMWJ.WordsearchMaker
+        working-directory: MorganMWJ.WordsearchMaker/MorganMWJ.WordsearchMaker
 
     steps:
       - uses: actions/checkout@v4
